@@ -12,4 +12,11 @@ public class PostCreate {
     @NotBlank(message = "내용을 입력해주세요")
     public String content;
     
+    public PostCreate() {
+    }
+    
+    public PostCreate(String title, String content) {
+        this.title = title;
+        this.content = content;
+    }
 }
