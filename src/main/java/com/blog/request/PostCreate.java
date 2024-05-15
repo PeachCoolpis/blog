@@ -7,6 +7,8 @@ import lombok.Data;
 @Data
 public class PostCreate {
     
+    private Long id;
+    
     @NotBlank(message = "제목을 입력해주세요")
     public String title;
     @NotBlank(message = "내용을 입력해주세요")

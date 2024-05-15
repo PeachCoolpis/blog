@@ -1,19 +1,16 @@
 package com.blog.controller;
 
 
+import com.blog.domain.Post;
 import com.blog.request.PostCreate;
+import com.blog.response.PostResponse;
 import com.blog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,5 +25,13 @@ public class PostController {
         return Map.of("postId", postService.write(postCreate));
     }
     
-    
+    @GetMapping("/posts/{postId}")
+    public PostResponse get(@PathVariable Long postId) {
+        Post post = postService.get(postId);
+        return PostResponse.builder()
+                .id(post.getId())
+                .title(post.getTitle() != null ? post.getTitle().substring(0,Math.min(post.getTitle().length(),10)) : null)
+                .content(post.getContent())
+                .build();
+    }
 }

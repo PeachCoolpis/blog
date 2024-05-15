@@ -21,8 +21,7 @@ import static org.springframework.http.MediaType.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
 @SpringBootTest
@@ -89,5 +88,24 @@ class PostControllerTest {
         Post post = postRepository.findAll().get(0);
         assertThat(post.getTitle()).isEqualTo("제목테스트");
         assertThat(post.getContent()).isEqualTo("내용테스트");
+    }
+    
+    @Test
+    @DisplayName("글 1개 조회")
+    void test4() throws Exception {
+        PostCreate postCreate = new PostCreate("123456","내용테스트");
+        Post post = Post.createPost(postCreate);
+        Post savePost = postRepository.save(post);
+       
+        
+        
+        mockMvc.perform(get("/posts/{postId}",savePost.getId())
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(savePost.getId()))
+                .andExpect(jsonPath("$.title").value(savePost.getTitle().substring(0,Math.min(savePost.getTitle().length(),10))))
+                .andExpect(jsonPath("$.content").value(savePost.getContent()))
+                .andDo(print());
+        
     }
 }
